@@ -2,24 +2,25 @@
 require_once('classes/database.php');
 $con = new database();
 session_start();
-
+ 
 // If the user is already logged in, check their account type and redirect accordingly
-//if (isset($_SESSION['username']) && isset($_SESSION['account_type'])) {
-//  if ($_SESSION['account_type'] == 0) {
-//    header('location:index.php');
-//  } else if ($_SESSION['account_type'] == 1) {
-//   header('location:user_account.php');
-//  }
-//   exit();
-//}
-
+if (isset($_SESSION['username']) && isset($_SESSION['account_type'])) {
+  if ($_SESSION['account_type'] == 0) {
+    header('location:index.php?status=success2');
+  } else if ($_SESSION['account_type'] == 1) {
+    header('location:user_account.php');
+  }
+  exit();
+}
+ 
 $error = ""; // Initialize error variable
-
+ 
 if (isset($_POST['login'])) {
   $username = $_POST['user'];
+ 
   $password = $_POST['pass'];
   $result = $con->check($username, $password);
-
+ 
   if ($result) {
       $_SESSION['username'] = $result['user_name'];
       $_SESSION['account_type'] = $result['account_type'];
@@ -27,7 +28,7 @@ if (isset($_POST['login'])) {
       $_SESSION['profilepicture'] = $result['user_profile_picture'];
       // Redirect based on account type
       if ($result['account_type'] == 0) {
-        header('location:index.php');
+        header('location:index.php?status=success2');
       } else if ($result['account_type'] == 1) {
         header('location:user_account.php');
       }
@@ -48,14 +49,14 @@ if (isset($_POST['login'])) {
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="./includes/style.css">
   <style>
-  
+ 
   </style>
 </head>
 <body>
-
+ 
 <div class="container-fluid login-container rounded shadow">
   <h2 class="text-center login-heading mb-2">Login</h2>
-  
+ 
   <form method="post">
     <div class="form-group">
       <!-- <label for="username">Username:</label> -->
@@ -71,7 +72,7 @@ if (isset($_POST['login'])) {
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         <?php endif; ?>
-
+ 
                         <div class="container">
                           <div class="row gx-1">
                             <div class="col">
@@ -86,7 +87,7 @@ if (isset($_POST['login'])) {
    
   </form>
 </div>
-
+ 
 <!-- Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

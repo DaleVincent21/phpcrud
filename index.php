@@ -2,21 +2,26 @@
 require_once('classes/database.php');
 $con = new database();
 session_start();
+ 
+if (isset($_SESSION['username']) || $_SESSION['account_type'] != 0) {
+  header('location:login.php');
+  exit();
+}
+ 
 if (isset($_POST['delete'])) {
     $id = $_POST['id'];
     if ($con->delete($id)) {
-    header('location:index.php?status=success');
-    }else{
-    echo "Something went wrong.";
+        header('location:index.php?status=success');
+    } else {
+        echo "Something went wrong.";
     }
 }
-
+ 
 ?>
  
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome!</title>
@@ -26,16 +31,14 @@ if (isset($_POST['delete'])) {
   <!-- For Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="./includes/style.css">
+ 
 <link rel="stylesheet" href="package/dist/sweetalert2.css">
-
 </head>
 <body>
-   
 <?php include('includes/navbar.php'); ?>
- 
 <div class="container user-info rounded shadow p-3 my-2">
 <h2 class="text-center mb-2">User Table</h2>
-  <div class="table-responsive">
+  <div class="table-responsive text-center">
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -71,21 +74,21 @@ if (isset($_POST['delete'])) {
           <td><?php echo $row['user_name']; ?></td></td>
           <td><?php echo $row['address']; ?></td></td>
           <td>
-          
+          <form action = "update.php" method="POST" style="display: inline;">
+            <input type="hidden" name="id" value = "<?php echo $row['user_id'];?>">
+            <button type="submit" name = "delete" class="btn btn-primary btn-sm" value = "Delete"
+            onclick="return confirm('You will be directed to the Update page')">
+            <i class="fas fa-edit"></i>
+            </button>
+        </form>    
         <!-- Delete button -->
-        <form action= update.php method="POST" style="display: inline;">
-            <input type="hidden" name="id" value ="<?php echo $row['user_id'];?>"> 
-            <button type="submit" name = "delete" class="btn btn-primary btn-sm" value = "Dalete" onclick="return confirm('Are you sure you want to delete this user?')">
-            <i class = "fas fa-edit"></i>
-            </button>
-        </form>
         <form method="POST" style="display: inline;">
-            <input type="hidden" name="id" value ="<?php echo $row['user_id'];?>"> 
-            <button type="submit" name = "delete" class="btn btn-danger btn-sm" value = "Dalete" onclick="return confirm('Are you sure you want to delete this user?')">
-            <i class = "fas fa-trash-alt"></i>
+            <input type="hidden" name="id" value = "<?php echo $row['user_id'];?>">
+            <button type="submit" name = "delete" class="btn btn-danger btn-sm" value = "Delete"
+            onclick="return confirm('Are you sure you want to delete this user?')">
+            <i class="fas fa-trash-alt"></i>
             </button>
         </form>
-
           </td>
         </tr>
         <?php } ?>
@@ -103,20 +106,29 @@ if (isset($_POST['delete'])) {
 <script src="./bootstrap-5.3.3-dist/js/bootstrap.js"></script>
 <!-- Bootsrap JS na nagpapagana ng danger alert natin -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
- 
 <script src="package/dist/sweetalert2.js"></script>
-
+ 
 <!-- Pop Up Messages after a succesful transaction starts here --> <script>
 document.addEventListener('DOMContentLoaded', function() {
   const params = new URLSearchParams(window.location.search);
   const status = params.get('status');
-
+ 
   if (status) {
     let title, text, icon;
     switch (status) {
       case 'success':
         title = 'Success!';
         text = 'Record is successfully deleted.';
+        icon = 'success';
+        break;
+        case 'success1':
+        title = 'Success!';
+        text = 'Record is successfully deleted.';
+        icon = 'success';
+        break;
+        case 'success2':
+        title = 'Success!';
+        text = 'You are already logged in.';
         icon = 'success';
         break;
       case 'error':
@@ -139,6 +151,5 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script> <!-- Pop Up Messages after a succesful transaction ends here -->
-
 </body>
 </html>

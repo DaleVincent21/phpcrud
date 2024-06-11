@@ -2,7 +2,7 @@
 require_once('classes/database.php');
  
 $con = new database ();
- 
+
  
 if(isset($_POST["id"])) {
   $id = $_POST["id"];
